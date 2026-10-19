@@ -7,13 +7,3 @@ data/uploaded_pdfs/*
 data/vector_db/*
 !data/uploaded_pdfs/.gitkeep
 !data/vector_db/.gitkeep
-
-venv
-verify_env
-__pycache__
-.idea
-.vscode
-logs
-cache
-*.db
-*.sqlite

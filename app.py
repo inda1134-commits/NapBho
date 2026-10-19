@@ -63,6 +63,7 @@ def choose_stage_solutions(stage_name, analysis, facts, decision):
 
 load_dotenv()
 st.set_page_config(page_title="납세자 권리보호 상담", page_icon="⚖️", layout="wide")
+st.divider()
 st.markdown("""
 <style>
 :root { --navy:#073c78; --blue:#0879df; --sky:#eaf6ff; --line:#b9dcff; --ink:#183b65; }
@@ -88,7 +89,6 @@ hr {border-color:#d4eaff}
 </style>
 <div class="hero"><h1>🛡️ 납세자 권리 보호 AI</h1><p><b>납세자의 고민을 함께 해결합니다</b>　세금 문제로 어려움을 겪고 계신가요? 상황을 분석하고, 가장 적합한 해결 방법을 찾아 친절하게 안내해 드립니다.</p></div>
 """, unsafe_allow_html=True)
-st.caption("개인정보는 꼭 필요한 범위에서만 입력해 주세요. 최종 안내는 확인된 사실을 바탕으로 AI 상담원이 가장 적합한 해결 방법을 판단해 작성합니다.")
 
 with st.sidebar:
     st.header("LLM 설정")
@@ -103,7 +103,7 @@ with st.sidebar:
     max_tokens = st.number_input("최대 토큰", 500, 8000, int(os.getenv("LLM_MAX_TOKENS", "2500")), 250)
     use_llm = st.checkbox("LLM 분석/답변 사용", value=bool(api_key))
     st.divider()
-    st.markdown("**개인정보 안내**")
+    st.markdown("⚠️ **개인정보 안내**")
     st.caption("주민등록번호·계좌번호 등 불필요한 개인정보는 입력하지 마세요. 외부 LLM을 사용하면 입력 일부가 API로 전송될 수 있습니다.")
     st.divider()
     st.divider()
@@ -145,7 +145,7 @@ for key, default in [("messages", []), ("analysis", None), ("original_complaint"
 
 left_col, right_col = st.columns([2.15, 1], gap="large")
 with left_col:
-    st.markdown("### 🧭 납세자 고민 해결 AI")
+    # st.markdown("### 🧭 납세자 고민 해결 AI")
     # 슬롯은 최종 렌더링 순서를 고정합니다: 진행 → 상담원 질문 → 답변 입력 → 결과 → 새 상담.
     progress_slot = st.container()
     question_slot = st.container()
@@ -157,7 +157,7 @@ with left_col:
     # 최종 해결 안내가 생성된 뒤에는 추가 상담 입력 영역을 표시하지 않습니다.
     if not st.session_state.get("last_result"):
         with input_slot:
-            st.markdown("#### ✍️ 상담원 질문에 답변하기")
+            st.markdown("#### ✍️ 상담 하기")
             with st.form("consultation_input", clear_on_submit=True):
                 current_spec = None
                 current_analysis = st.session_state.get("analysis") or {}
@@ -256,7 +256,7 @@ with left_col:
     analysis = st.session_state.analysis
     if analysis:
         with progress_slot:
-            st.markdown('<div class="section-card"><b>상담 진행</b><p>해결 방법을 결정하는 데 꼭 필요한 사실만 순서대로 확인합니다.</p></div>', unsafe_allow_html=True)
+            st.markdown('<div class="section-card"><b>🧪 상담 진행</b><p>해결 방법을 결정하는 데 꼭 필요한 사실만 순서대로 확인합니다.</p></div>', unsafe_allow_html=True)
 
         # 국세청 소관이 아닌 것으로 확인되면 즉시 안내하고 국세청 권리구제 질문을 종료합니다.
         if analysis.get("possible_agency") == "OTHER":
@@ -283,7 +283,8 @@ with left_col:
             else:
                 st.session_state.current_followup_question = None
                 with result_slot:
-                    st.subheader("④ 선택한 해결방법으로 최종 안내")
+                    st.divider()
+                    st.subheader("📜 선택한 해결방법으로 최종 안내")
                     st.markdown("필요한 사실 확인이 끝났습니다. 지금까지의 답변과 과세단계를 종합해 AI 상담원이 가장 적합한 해결 방법을 선정하고 안내합니다.")
                     uploaded_files = st.session_state.get("remedy_reference_pdfs", [])
 
